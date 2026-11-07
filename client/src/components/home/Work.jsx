@@ -12,6 +12,12 @@ import {
 const slug = (text) =>
     String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+/* Orange accent words in titles: serif italic (--font-serif in your theme).
+   font-normal because Instrument Serif has no bold weight, and the slightly
+   larger size balances the serif's smaller x-height. */
+const ACCENT_TITLE =
+    "font-serif font-normal italic text-[#D94F35] text-[1.12em] leading-none";
+
 /* Shared look for every small card inside the dark preview */
 const PREVIEW_CARD = "rounded-xl border border-[#3A3B36] bg-[#222320]";
 const PREVIEW_ROW = `${PREVIEW_CARD} work-row px-3 py-2.5 sm:px-3.5 sm:py-3`;
@@ -487,7 +493,7 @@ export default function Work() {
                         className={`${HEADING} text-balance text-[1.625rem] font-bold min-[400px]:text-3xl sm:text-4xl leading-tight tracking-tight`}
                     >
                         Selected work &amp;{" "}
-                        <span className="text-[#D94F35]">digital platforms.</span>
+                        <span className={ACCENT_TITLE}>digital platforms.</span>
                     </h2>
                     <p className="max-w-xl text-[13px] leading-relaxed text-[#191919]/70 sm:text-sm lg:max-w-md">
                         Live client engagements, learning applications, and operational prototypes

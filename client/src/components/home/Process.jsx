@@ -215,11 +215,11 @@ export default function Process() {
             />
 
             <div className={`relative z-10 ${CONTAINER}`}>
-                {/* Title: one line, scales with viewport width so it never wraps */}
+                {/* Title: same size as the other section titles (matches "Selected work") */}
                 <Reveal>
                     <div className="mb-6 text-center lg:mb-8">
                         <h2
-                            className={`${HEADING} whitespace-nowrap text-[clamp(1.1rem,3.4vw,3rem)] font-bold leading-tight tracking-tight`}
+                            className={`${HEADING} text-balance text-[1.625rem] font-bold leading-tight tracking-tight min-[400px]:text-3xl sm:text-4xl`}
                         >
                             Five steps. From brief to{" "}
                             <span className={`${SERIF} italic text-[#D94F35]`}>operational launch.</span>

@@ -326,11 +326,11 @@ export default function Contact({ formData, setFormData, submitted, setSubmitted
             />
 
             <div className={`relative z-10 ${CONTAINER}`}>
-                {/* Title: one line on large screens, wraps naturally on small ones */}
+                {/* Title: same size as the other section titles (matches "Selected work" and "Process") */}
                 <Reveal>
                     <div className="mb-6 text-center lg:mb-8">
                         <h2
-                            className={`${HEADING} text-balance text-2xl font-bold leading-tight tracking-tight sm:text-3xl lg:whitespace-nowrap lg:text-[clamp(1.5rem,2.7vw,2.75rem)]`}
+                            className={`${HEADING} text-balance text-[1.625rem] font-bold leading-tight tracking-tight min-[400px]:text-3xl sm:text-4xl`}
                         >
                             Have a project in mind?{" "}
                             <span className={`${SERIF} italic text-[#D94F35]`}>

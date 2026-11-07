@@ -12,6 +12,8 @@ export default function Hero() {
     const heroRef = useRef(null);
 
     useEffect(() => {
+        if (!heroRef.current) return;
+
         const prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)"
         ).matches;
@@ -19,15 +21,19 @@ export default function Hero() {
         if (prefersReducedMotion) return undefined;
 
         const context = gsap.context(() => {
+            const titleLines = gsap.utils.toArray(".hero-title-line", heroRef.current);
+            const copy = gsap.utils.toArray(".hero-copy", heroRef.current);
+            const actions = gsap.utils.toArray(".hero-actions", heroRef.current);
+
             const timeline = gsap.timeline({
                 defaults: {
                     ease: "power3.out",
                 },
             });
 
-            timeline
-                .fromTo(
-                    ".hero-title-line",
+            if (titleLines.length) {
+                timeline.fromTo(
+                    titleLines,
                     {
                         yPercent: 110,
                         autoAlpha: 0,
@@ -39,9 +45,12 @@ export default function Hero() {
                         stagger: 0.16,
                     },
                     0
-                )
-                .fromTo(
-                    ".hero-copy",
+                );
+            }
+
+            if (copy.length) {
+                timeline.fromTo(
+                    copy,
                     {
                         y: 22,
                         autoAlpha: 0,
@@ -52,9 +61,12 @@ export default function Hero() {
                         duration: 0.75,
                     },
                     0.4
-                )
-                .fromTo(
-                    ".hero-actions",
+                );
+            }
+
+            if (actions.length) {
+                timeline.fromTo(
+                    actions,
                     {
                         y: 18,
                         autoAlpha: 0,
@@ -65,35 +77,8 @@ export default function Hero() {
                         duration: 0.7,
                     },
                     0.55
-                )
-                .fromTo(
-                    ".hero-service, .hero-separator",
-                    {
-                        y: 12,
-                        autoAlpha: 0,
-                    },
-                    {
-                        y: 0,
-                        autoAlpha: 1,
-                        duration: 0.45,
-                        stagger: 0.07,
-                    },
-                    0.75
-                )
-                .fromTo(
-                    ".hero-detail",
-                    {
-                        y: 14,
-                        autoAlpha: 0,
-                    },
-                    {
-                        y: 0,
-                        autoAlpha: 1,
-                        duration: 0.5,
-                        stagger: 0.1,
-                    },
-                    0.95
                 );
+            }
         }, heroRef);
 
         return () => context.revert();

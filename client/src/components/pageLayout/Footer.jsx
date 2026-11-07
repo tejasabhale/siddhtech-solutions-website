@@ -1,11 +1,11 @@
 import React from "react";
-import { CONTAINER, FOCUS } from "../home/shared.jsx";
+import { CONTAINER, FOCUS, SERIF } from "../home/shared.jsx";
 
 /* Same logo file as the navbar (lives in /public) */
 const LOGO_SRC = "/siddhtech-logo.svg";
 
 /* TODO: replace with your real email address */
-const CONTACT_EMAIL = "hello@siddhtech.com";
+const CONTACT_EMAIL = "siddhtechsoftwaresolutions@gmail.com";
 
 const FOOTER_NAVIGATION = [
     { label: "Home", href: "#home" },
@@ -215,8 +215,14 @@ export default function Footer() {
                             </span>
 
                             <span className="min-w-0">
-                                <span className="block truncate whitespace-nowrap font-['Plus_Jakarta_Sans',sans-serif] text-base font-extrabold tracking-tight text-[#F5F1E8] transition-colors group-hover:text-[#D94F35] min-[400px]:text-lg sm:text-xl">
-                                    SiddhTech Solutions
+                                {/* Same title style as the sections: bold sans + orange italic serif accent */}
+                                <span className="block truncate whitespace-nowrap font-['Plus_Jakarta_Sans',sans-serif] text-base font-extrabold tracking-tight text-[#F5F1E8] min-[400px]:text-lg sm:text-xl">
+                                    <span className="transition-colors duration-300 group-hover:text-[#D94F35]">
+                                        SiddhTech
+                                    </span>{" "}
+                                    <span className={`${SERIF} font-normal italic text-[#D94F35]`}>
+                                        Solutions
+                                    </span>
                                 </span>
 
                                 <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.18em] text-[#D94F35]">
