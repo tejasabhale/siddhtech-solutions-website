@@ -10,7 +10,7 @@ import {
 import { CARD_RADIUS, CONTAINER, HEADING, SERIF, Reveal, RollButton } from "./shared.jsx";
 
 const COMPANY = "SiddhTech Solutions";
-const EMAIL = "siddhtechdigitalsolutions@gmail.com";
+const EMAIL = "siddhtechsoftwaresolutions@gmail.com";
 const SMOOTH = [0.22, 1, 0.36, 1];
 
 // text-base on mobile prevents iOS Safari from zooming into focused fields
