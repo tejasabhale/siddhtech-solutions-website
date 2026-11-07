@@ -27,6 +27,12 @@
   --warm-grey: #B9B0A2;
   --surface: #E8E1D6;
   --dark: #222320;
+
+  /* Scrollbar tokens */
+  --scrollbar-size: 10px;
+  --scrollbar-thumb: rgba(217, 79, 53, 0.5);
+  --scrollbar-thumb-hover: rgba(217, 79, 53, 0.85);
+  --scrollbar-thumb-active: #D94F35;
 }
 
 html {
@@ -49,6 +55,50 @@ body {
 ::selection {
   background-color: #D94F35;
   color: #FFFFFF;
+}
+
+/* ================= SCROLLBAR ================= */
+
+/* Chrome, Edge, Safari, Opera */
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  transition: background-color 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox (and any browser without ::-webkit-scrollbar support).
+   Kept inside @supports because Chromium 121+ would otherwise let
+   scrollbar-color override the styled version above. */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
