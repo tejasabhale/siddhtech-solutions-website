@@ -1,5 +1,5 @@
 import React from "react";
-import { CONTAINER, FOCUS } from "../home/shared.jsx";
+import { CONTAINER, FOCUS } from "../home/shared";
 
 /* Same logo file as the navbar (lives in /public) */
 const LOGO_SRC = "/siddhtech-logo.svg";
