@@ -1,3 +1,4 @@
+
 import React, {
     useState,
     useEffect,
@@ -221,30 +222,53 @@ export default function Navbar() {
         };
     }, [menuOpen]);
 
-    /* ---------- Body scroll lock + focus management ---------- */
-    useEffect(() => {
-        document.body.style.overflow = menuOpen ? "hidden" : "";
+    /* ---------- Immediate mobile scroll lock + focus management ---------- */
+    useLayoutEffect(() => {
+        const html = document.documentElement;
+        const body = document.body;
 
-        if (menuOpen) {
-            window.lenis?.stop?.();
-        } else {
-            window.lenis?.start?.();
+        if (!menuOpen) {
+            if (wasOpen.current) {
+                if (window.innerWidth < 1024) {
+                    toggleRef.current?.focus();
+                }
+
+                wasOpen.current = false;
+            }
+
+            return undefined;
         }
 
-        if (menuOpen) {
-            requestAnimationFrame(() => {
-                menuRef.current
-                    ?.querySelector("a[href]")
-                    ?.focus();
-            });
-        } else if (wasOpen.current) {
-            toggleRef.current?.focus();
-        }
+        // Preserve existing inline overflow styles.
+        const previousHtmlOverflow = html.style.overflow;
+        const previousBodyOverflow = body.style.overflow;
 
-        wasOpen.current = menuOpen;
+        // Lock document scrolling before the next browser paint.
+        html.classList.add("mobile-menu-open");
+        html.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+
+        // Stop Lenis scrolling.
+        window.lenis?.stop?.();
+
+        // Move keyboard focus into the mobile menu.
+        const focusFrame = window.requestAnimationFrame(() => {
+            menuRef.current
+                ?.querySelector('a[href]:not([tabindex="-1"])')
+                ?.focus();
+        });
+
+        wasOpen.current = true;
 
         return () => {
-            document.body.style.overflow = "";
+            window.cancelAnimationFrame(focusFrame);
+
+            // Restore original document styles.
+            html.classList.remove("mobile-menu-open");
+            html.style.overflow = previousHtmlOverflow;
+            body.style.overflow = previousBodyOverflow;
+
+            // Resume Lenis.
             window.lenis?.start?.();
         };
     }, [menuOpen]);
@@ -304,13 +328,43 @@ export default function Navbar() {
                         transition-delay: 0ms !important;
                     }
                 }
+
+                /* Hide page scrollbar while mobile menu is open */
+                html.mobile-menu-open,
+                html.mobile-menu-open body {
+                    overflow: hidden !important;
+                }
+
+                html.mobile-menu-open {
+                    scrollbar-width: none !important;
+                    -ms-overflow-style: none !important;
+                }
+
+                html.mobile-menu-open::-webkit-scrollbar,
+                html.mobile-menu-open body::-webkit-scrollbar {
+                    display: none !important;
+                    width: 0 !important;
+                    height: 0 !important;
+                }
+
+                /* Hide mobile menu scrollbar without disabling touch scrolling */
+                html.mobile-menu-open #mobile-menu {
+                    scrollbar-width: none !important;
+                    -ms-overflow-style: none !important;
+                }
+
+                html.mobile-menu-open #mobile-menu::-webkit-scrollbar {
+                    display: none !important;
+                    width: 0 !important;
+                    height: 0 !important;
+                }
             `}</style>
 
             {/* ================= HEADER ================= */}
             <header
                 className={`siddhtech-nav fixed inset-x-0 top-0 z-50 flex justify-center border-b transition-[padding,background-color,border-color,backdrop-filter] duration-500 ${EASE} ${scrolled
-                    ? "px-3 sm:px-6"
-                    : "px-0"
+                        ? "px-3 sm:px-6"
+                        : "px-0"
                     } ${scrolled || menuOpen
                         ? "border-transparent bg-transparent"
                         : "border-[#B9B0A2]/30 bg-[#F5F1E8]/75 backdrop-blur-md"
@@ -323,8 +377,8 @@ export default function Navbar() {
             >
                 <div
                     className={`relative w-full overflow-hidden border transition-all duration-500 ${EASE} ${scrolled
-                        ? "max-w-5xl rounded-full"
-                        : "max-w-7xl rounded-none"
+                            ? "max-w-5xl rounded-full"
+                            : "max-w-7xl rounded-none"
                         } ${menuOpen
                             ? "border-transparent bg-transparent shadow-none"
                             : scrolled
@@ -334,8 +388,8 @@ export default function Navbar() {
                 >
                     <div
                         className={`flex items-center justify-between gap-3 transition-all duration-500 ${EASE} ${scrolled
-                            ? "h-14 pl-4 pr-2 sm:pl-5 sm:pr-2.5"
-                            : "h-16 px-4 sm:h-20 sm:px-6 lg:px-12"
+                                ? "h-14 pl-4 pr-2 sm:pl-5 sm:pr-2.5"
+                                : "h-16 px-4 sm:h-20 sm:px-6 lg:px-12"
                             }`}
                     >
                         {/* ================= BRAND ================= */}
@@ -344,17 +398,15 @@ export default function Navbar() {
                             onClick={(e) => scrollTo(e, "#home")}
                             aria-label="SiddhTech Solutions, back to top"
                             className={`group flex min-w-0 items-center gap-2 rounded-full no-underline transition-colors duration-500 sm:gap-3 ${FOCUS} focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8] ${menuOpen
-                                ? "text-[#F5F1E8]"
-                                : "text-[#191919]"
+                                    ? "text-[#F5F1E8]"
+                                    : "text-[#191919]"
                                 }`}
                         >
-                            {/* Logo from /public.
-                                Sits on a light chip while the dark mobile menu is open,
-                                so a dark logo never disappears into the background. */}
+                            {/* Logo from /public */}
                             <span
                                 className={`flex shrink-0 items-center justify-center rounded-lg p-0.5 transition-colors duration-500 ${menuOpen
-                                    ? "bg-[#F5F1E8]"
-                                    : "bg-transparent"
+                                        ? "bg-[#F5F1E8]"
+                                        : "bg-transparent"
                                     }`}
                             >
                                 <img
@@ -366,8 +418,8 @@ export default function Navbar() {
                                     decoding="async"
                                     draggable="false"
                                     className={`w-auto select-none object-contain transition-all duration-500 ${EASE} group-hover:scale-105 ${scrolled
-                                        ? "h-8 sm:h-9"
-                                        : "h-9 sm:h-10 lg:h-11"
+                                            ? "h-8 sm:h-9"
+                                            : "h-9 sm:h-10 lg:h-11"
                                         }`}
                                 />
                             </span>
@@ -399,11 +451,8 @@ export default function Navbar() {
                             />
 
                             {NAV_LINKS.map((link) => {
-                                const key =
-                                    link.href.slice(1);
-
-                                const isActive =
-                                    activeSection === key;
+                                const key = link.href.slice(1);
+                                const isActive = activeSection === key;
 
                                 return (
                                     <a
@@ -425,13 +474,11 @@ export default function Navbar() {
                                             setHovered(null)
                                         }
                                         aria-current={
-                                            isActive
-                                                ? "true"
-                                                : undefined
+                                            isActive ? "true" : undefined
                                         }
                                         className={`relative flex h-9 items-center rounded-full px-4 text-sm font-medium tracking-tight transition-colors duration-300 ${FOCUS} ${isActive
-                                            ? "text-[#D94F35]"
-                                            : "text-[#191919]/75 hover:text-[#191919]"
+                                                ? "text-[#D94F35]"
+                                                : "text-[#191919]/75 hover:text-[#191919]"
                                             }`}
                                     >
                                         {link.label}
@@ -482,8 +529,8 @@ export default function Navbar() {
                                         : "Open menu"
                                 }
                                 className={`relative h-11 w-11 shrink-0 rounded-full border transition-colors duration-500 lg:hidden ${FOCUS} ${menuOpen
-                                    ? "border-[#F5F1E8]/30 text-[#F5F1E8]"
-                                    : "border-[#B9B0A2]/50 text-[#191919]"
+                                        ? "border-[#F5F1E8]/30 text-[#F5F1E8]"
+                                        : "border-[#B9B0A2]/50 text-[#191919]"
                                     }`}
                             >
                                 <span
@@ -512,8 +559,8 @@ export default function Navbar() {
                         ref={barRef}
                         aria-hidden="true"
                         className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[#D94F35] transition-opacity duration-300 ${menuOpen
-                            ? "opacity-0"
-                            : "opacity-100"
+                                ? "opacity-0"
+                                : "opacity-100"
                             }`}
                         style={{
                             transform: "scaleX(0)",
@@ -528,8 +575,8 @@ export default function Navbar() {
                 id="mobile-menu"
                 aria-hidden={!menuOpen}
                 className={`siddhtech-nav fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[#191919] text-[#F5F1E8] transition-[clip-path,visibility] duration-700 ${EASE} lg:hidden ${menuOpen
-                    ? "visible"
-                    : "invisible"
+                        ? "visible"
+                        : "invisible"
                     }`}
                 style={{
                     clipPath: menuOpen
@@ -543,8 +590,7 @@ export default function Navbar() {
                 >
                     {NAV_LINKS.map((link, i) => {
                         const isActive =
-                            activeSection ===
-                            link.href.slice(1);
+                            activeSection === link.href.slice(1);
 
                         return (
                             <a
@@ -555,13 +601,11 @@ export default function Navbar() {
                                     scrollTo(e, link.href)
                                 }
                                 aria-current={
-                                    isActive
-                                        ? "true"
-                                        : undefined
+                                    isActive ? "true" : undefined
                                 }
                                 className={`group flex items-center justify-center gap-3 border-b border-[#F5F1E8]/10 py-3.5 font-['Plus_Jakarta_Sans',sans-serif] text-3xl font-bold tracking-tight transition-all duration-700 sm:py-4 sm:text-4xl ${EASE} focus-visible:text-[#D94F35] focus-visible:outline-none ${menuOpen
-                                    ? "translate-y-0 opacity-100"
-                                    : "translate-y-10 opacity-0"
+                                        ? "translate-y-0 opacity-100"
+                                        : "translate-y-10 opacity-0"
                                     } ${isActive
                                         ? "text-[#D94F35]"
                                         : "text-[#F5F1E8] hover:text-[#D94F35]"
@@ -582,8 +626,8 @@ export default function Navbar() {
                                 <span
                                     aria-hidden="true"
                                     className={`h-2 w-2 shrink-0 rounded-full bg-[#D94F35] transition-transform duration-300 ${isActive
-                                        ? "scale-100"
-                                        : "scale-0 group-hover:scale-100 group-focus-visible:scale-100"
+                                            ? "scale-100"
+                                            : "scale-0 group-hover:scale-100 group-focus-visible:scale-100"
                                         }`}
                                 />
                             </a>
@@ -594,8 +638,8 @@ export default function Navbar() {
                 {/* Mobile menu footer */}
                 <div
                     className={`mx-auto w-full max-w-2xl px-6 pt-4 transition-all duration-700 sm:px-10 ${EASE} ${menuOpen
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-6 opacity-0"
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-6 opacity-0"
                         }`}
                     style={{
                         transitionDelay: menuOpen

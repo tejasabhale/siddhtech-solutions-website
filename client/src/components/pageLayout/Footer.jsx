@@ -13,7 +13,7 @@ const FOOTER_NAVIGATION = [
     { label: "Selected Work", href: "#work" },
     { label: "Our Process", href: "#process" },
     { label: "Our Approach", href: "#approach" },
-    { label: "Pricing", href: "#pricing" },
+    // { label: "Pricing", href: "#pricing" },
     { label: "Start a Project", href: "#contact", featured: true },
 ];
 
