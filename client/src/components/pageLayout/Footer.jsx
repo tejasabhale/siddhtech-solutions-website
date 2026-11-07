@@ -1,10 +1,10 @@
+
 import React from "react";
 import { CONTAINER, FOCUS, SERIF } from "../home/shared.jsx";
 
-/* Same logo file as the navbar (lives in /public) */
+/* Same logo file as the navbar */
 const LOGO_SRC = "/siddhtech-logo.svg";
 
-/* TODO: replace with your real email address */
 const CONTACT_EMAIL = "siddhtechsoftwaresolutions@gmail.com";
 
 const FOOTER_NAVIGATION = [
@@ -51,6 +51,19 @@ const SOCIAL_LINKS = [
         external: false,
     },
 ];
+
+/* Hide empty and placeholder links automatically */
+const isAvailableLink = (href) =>
+    typeof href === "string" &&
+    href.trim().length > 0 &&
+    !/(your-handle|example\.com|placeholder)/i.test(href) &&
+    href !== "#";
+
+const AVAILABLE_SOCIAL_LINKS = SOCIAL_LINKS.filter((item) =>
+    isAvailableLink(item.href)
+);
+
+/* ---------- Social icons ---------- */
 
 function SocialIcon({ name }) {
     const stroke = {
@@ -123,6 +136,8 @@ function SocialIcon({ name }) {
     );
 }
 
+/* ---------- Footer styles ---------- */
+
 const eyebrow =
     "text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-[#B9B0A2]/70";
 
@@ -133,6 +148,8 @@ function FooterHeading({ children }) {
         </h3>
     );
 }
+
+/* ---------- Smooth scrolling ---------- */
 
 function scrollToSection(event, href) {
     const target = document.getElementById(href.slice(1));
@@ -177,6 +194,8 @@ function scrollToTop() {
     );
 }
 
+/* ---------- Footer component ---------- */
+
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
@@ -198,8 +217,6 @@ export default function Footer() {
                             aria-label="SiddhTech Solutions home"
                             className={`group inline-flex max-w-full cursor-pointer items-center gap-2.5 rounded-lg sm:gap-3 ${FOCUS}`}
                         >
-                            {/* Light chip keeps the black parts of the logo
-                                visible on the dark footer (same as navbar menu) */}
                             <span className="flex shrink-0 items-center justify-center rounded-lg bg-[#F5F1E8] p-1">
                                 <img
                                     src={LOGO_SRC}
@@ -215,7 +232,6 @@ export default function Footer() {
                             </span>
 
                             <span className="min-w-0">
-                                {/* Same title style as the sections: bold sans + orange italic serif accent */}
                                 <span className="block truncate whitespace-nowrap font-['Plus_Jakarta_Sans',sans-serif] text-base font-extrabold tracking-tight text-[#F5F1E8] min-[400px]:text-lg sm:text-xl">
                                     <span className="transition-colors duration-300 group-hover:text-[#D94F35]">
                                         SiddhTech
@@ -237,35 +253,43 @@ export default function Footer() {
                             work smarter and grow.
                         </p>
 
-                        {/* Socials: all icons share the same size and style */}
-                        <ul className="mt-5 flex flex-wrap items-center gap-2.5">
-                            {SOCIAL_LINKS.map((item) => (
-                                <li key={item.name}>
-                                    <a
-                                        href={item.href}
-                                        {...(item.external
-                                            ? {
-                                                target: "_blank",
-                                                rel: "noopener noreferrer",
+                        {/* Render only available social links */}
+                        {AVAILABLE_SOCIAL_LINKS.length > 0 && (
+                            <ul
+                                aria-label="Social and contact links"
+                                className="mt-5 flex flex-wrap items-center gap-2.5"
+                            >
+                                {AVAILABLE_SOCIAL_LINKS.map((item) => (
+                                    <li key={item.name}>
+                                        <a
+                                            href={item.href}
+                                            {...(item.external
+                                                ? {
+                                                    target: "_blank",
+                                                    rel: "noopener noreferrer",
+                                                }
+                                                : {})}
+                                            aria-label={
+                                                item.name === "Email"
+                                                    ? `Email us at ${CONTACT_EMAIL}`
+                                                    : item.name
                                             }
-                                            : {})}
-                                        aria-label={
-                                            item.name === "Email"
-                                                ? `Email us at ${CONTACT_EMAIL}`
-                                                : item.name
-                                        }
-                                        title={item.name}
-                                        className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[#3A3B36] text-[#B9B0A2] transition-all duration-200 hover:border-[#D94F35] hover:bg-[#D94F35] hover:text-white ${FOCUS}`}
-                                    >
-                                        <SocialIcon name={item.name} />
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
+                                            title={item.name}
+                                            className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[#3A3B36] text-[#B9B0A2] transition-all duration-200 hover:border-[#D94F35] hover:bg-[#D94F35] hover:text-white ${FOCUS}`}
+                                        >
+                                            <SocialIcon name={item.name} />
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
 
                     {/* Navigation */}
-                    <nav aria-label="Footer navigation" className="min-w-0">
+                    <nav
+                        aria-label="Footer navigation"
+                        className="min-w-0"
+                    >
                         <FooterHeading>
                             Explore
                         </FooterHeading>
@@ -279,14 +303,17 @@ export default function Footer() {
                                             scrollToSection(event, item.href)
                                         }
                                         className={`inline-flex cursor-pointer items-center text-[13px] transition-colors duration-200 hover:text-[#D94F35] ${FOCUS} ${item.featured
-                                            ? "font-semibold text-[#D94F35]"
-                                            : "text-[#B9B0A2]/85"
+                                                ? "font-semibold text-[#D94F35]"
+                                                : "text-[#B9B0A2]/85"
                                             }`}
                                     >
                                         {item.label}
 
                                         {item.featured && (
-                                            <span className="ml-1.5" aria-hidden="true">
+                                            <span
+                                                className="ml-1.5"
+                                                aria-hidden="true"
+                                            >
                                                 ↗
                                             </span>
                                         )}
