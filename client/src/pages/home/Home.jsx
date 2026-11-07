@@ -8,6 +8,7 @@ import Process from "../../components/home/Process.jsx";
 import Approach from "../../components/home/Approach.jsx";
 import Pricing from "../../components/home/Pricing.jsx";
 import Contact from "../../components/home/Contact.jsx";
+import Team from "../../components/home/Team.jsx";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -35,6 +36,7 @@ export default function Home() {
       <Process />
       <Approach />
       {/* <Pricing onChoose={chooseTier} /> */}
+      <Team />
 
       <Contact
         formData={formData}

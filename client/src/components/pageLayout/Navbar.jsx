@@ -12,6 +12,7 @@ const NAV_LINKS = [
     { label: "Work", href: "#work" },
     { label: "Process", href: "#process" },
     { label: "Approach", href: "#approach" },
+    { label: "Team", href: "#team" },
     // { label: "Pricing", href: "#pricing" },
 ];
 
@@ -21,14 +22,13 @@ const SECTION_IDS = [
     "work",
     "process",
     "approach",
+    "team",
     // "pricing",
     "contact",
 ];
 
 /* Logo file lives in /public */
 const LOGO_SRC = "/siddhtech-logo.svg";
-
-/* Set to false if the logo file already contains the "SiddhTech Solutions" name */
 const SHOW_WORDMARK = true;
 
 const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
@@ -43,6 +43,7 @@ export default function Navbar() {
     const [wipeOrigin, setWipeOrigin] = useState(
         "calc(100% - 40px) 40px"
     );
+
     const [indicator, setIndicator] = useState({
         left: 0,
         width: 0,
@@ -239,19 +240,15 @@ export default function Navbar() {
             return undefined;
         }
 
-        // Preserve existing inline overflow styles.
         const previousHtmlOverflow = html.style.overflow;
         const previousBodyOverflow = body.style.overflow;
 
-        // Lock document scrolling before the next browser paint.
         html.classList.add("mobile-menu-open");
         html.style.overflow = "hidden";
         body.style.overflow = "hidden";
 
-        // Stop Lenis scrolling.
         window.lenis?.stop?.();
 
-        // Move keyboard focus into the mobile menu.
         const focusFrame = window.requestAnimationFrame(() => {
             menuRef.current
                 ?.querySelector('a[href]:not([tabindex="-1"])')
@@ -263,12 +260,10 @@ export default function Navbar() {
         return () => {
             window.cancelAnimationFrame(focusFrame);
 
-            // Restore original document styles.
             html.classList.remove("mobile-menu-open");
             html.style.overflow = previousHtmlOverflow;
             body.style.overflow = previousBodyOverflow;
 
-            // Resume Lenis.
             window.lenis?.start?.();
         };
     }, [menuOpen]);
@@ -329,7 +324,6 @@ export default function Navbar() {
                     }
                 }
 
-                /* Hide page scrollbar while mobile menu is open */
                 html.mobile-menu-open,
                 html.mobile-menu-open body {
                     overflow: hidden !important;
@@ -347,7 +341,6 @@ export default function Navbar() {
                     height: 0 !important;
                 }
 
-                /* Hide mobile menu scrollbar without disabling touch scrolling */
                 html.mobile-menu-open #mobile-menu {
                     scrollbar-width: none !important;
                     -ms-overflow-style: none !important;
@@ -362,9 +355,7 @@ export default function Navbar() {
 
             {/* ================= HEADER ================= */}
             <header
-                className={`siddhtech-nav fixed inset-x-0 top-0 z-50 flex justify-center border-b transition-[padding,background-color,border-color,backdrop-filter] duration-500 ${EASE} ${scrolled
-                        ? "px-3 sm:px-6"
-                        : "px-0"
+                className={`siddhtech-nav fixed inset-x-0 top-0 z-50 flex justify-center border-b transition-[padding,background-color,border-color,backdrop-filter] duration-500 ${EASE} ${scrolled ? "px-3 sm:px-6" : "px-0"
                     } ${scrolled || menuOpen
                         ? "border-transparent bg-transparent"
                         : "border-[#B9B0A2]/30 bg-[#F5F1E8]/75 backdrop-blur-md"
@@ -392,7 +383,7 @@ export default function Navbar() {
                                 : "h-16 px-4 sm:h-20 sm:px-6 lg:px-12"
                             }`}
                     >
-                        {/* ================= BRAND ================= */}
+                        {/* Brand */}
                         <a
                             href="#home"
                             onClick={(e) => scrollTo(e, "#home")}
@@ -402,7 +393,6 @@ export default function Navbar() {
                                     : "text-[#191919]"
                                 }`}
                         >
-                            {/* Logo from /public */}
                             <span
                                 className={`flex shrink-0 items-center justify-center rounded-lg p-0.5 transition-colors duration-500 ${menuOpen
                                         ? "bg-[#F5F1E8]"
@@ -431,7 +421,7 @@ export default function Navbar() {
                             )}
                         </a>
 
-                        {/* ================= DESKTOP NAVIGATION ================= */}
+                        {/* Desktop navigation */}
                         <nav
                             aria-label="Primary navigation"
                             onMouseLeave={() => setHovered(null)}
@@ -487,7 +477,7 @@ export default function Navbar() {
                             })}
                         </nav>
 
-                        {/* ================= CTA + MOBILE TOGGLE ================= */}
+                        {/* CTA + Mobile toggle */}
                         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                             <a
                                 href="#contact"
@@ -558,13 +548,9 @@ export default function Navbar() {
                     <span
                         ref={barRef}
                         aria-hidden="true"
-                        className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[#D94F35] transition-opacity duration-300 ${menuOpen
-                                ? "opacity-0"
-                                : "opacity-100"
+                        className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[#D94F35] transition-opacity duration-300 ${menuOpen ? "opacity-0" : "opacity-100"
                             }`}
-                        style={{
-                            transform: "scaleX(0)",
-                        }}
+                        style={{ transform: "scaleX(0)" }}
                     />
                 </div>
             </header>
@@ -574,9 +560,7 @@ export default function Navbar() {
                 ref={menuRef}
                 id="mobile-menu"
                 aria-hidden={!menuOpen}
-                className={`siddhtech-nav fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[#191919] text-[#F5F1E8] transition-[clip-path,visibility] duration-700 ${EASE} lg:hidden ${menuOpen
-                        ? "visible"
-                        : "invisible"
+                className={`siddhtech-nav fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[#191919] text-[#F5F1E8] transition-[clip-path,visibility] duration-700 ${EASE} lg:hidden ${menuOpen ? "visible" : "invisible"
                     }`}
                 style={{
                     clipPath: menuOpen
