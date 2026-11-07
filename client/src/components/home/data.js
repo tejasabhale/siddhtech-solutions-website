@@ -1,7 +1,7 @@
 export const PROJECTS = [
   {
-    id: "sprouthub",
-    title: "SproutHub",
+    id: "sproughub",
+    title: "SprougHub",
     category: "Non-Profit & Community Platform",
     badge: "Live Client Project",
     status: "Live",
@@ -25,7 +25,7 @@ export const PROJECTS = [
         { label: "Active Programs", val: "18 Initiatives" },
         { label: "Volunteer Network", val: "450+ Members" },
       ],
-      tagline: "SproutHub Foundation · Annual Impact Report",
+      tagline: "SprougHub Foundation · Annual Impact Report",
     },
   },
   {
@@ -70,89 +70,89 @@ export const PROJECTS = [
       ],
     },
   },
-  {
-    id: "krishilink",
-    title: "KrishiLink",
-    category: "AgriTech & B2B Marketplace",
-    badge: "Prototype Concept",
-    status: "Concept",
-    url: null,
-    displayUrl: "Prototype Architecture",
-    description:
-      "A direct farmer-to-buyer agricultural marketplace concept created to bypass predatory middlemen, providing transparent regional mandi prices and automated bulk order dispatch.",
-    deliverables: [
-      "Direct farmer quotation & bidding interface",
-      "Real-time regional Mandi price tracking",
-      "WhatsApp dispatch alerts & SMS fallback",
-      "Bilingual interface design (English / Marathi)",
-    ],
-    previewType: "marketplace-feed",
-    previewData: {
-      marketIndex: "Maharashtra APMC Regional Bids",
-      updatedAt: "Today · 06:30 AM IST",
-      lots: [
-        {
-          item: "Grade-A Tomatoes",
-          origin: "Nashik Mandi",
-          avgPrice: "₹34 / kg",
-          directOffer: "₹32 / kg",
-          status: "Open",
-        },
-        {
-          item: "Lasalgaon Red Onions",
-          origin: "Lasalgaon Mandi",
-          avgPrice: "₹26 / kg",
-          directOffer: "₹24 / kg",
-          status: "Verified",
-        },
-        {
-          item: "Ratnagiri Hapus (Alphonso)",
-          origin: "Ratnagiri Hub",
-          avgPrice: "₹1,200 / crate",
-          directOffer: "₹1,050 / crate",
-          status: "Pre-order",
-        },
-      ],
-    },
-  },
-  {
-    id: "taskflow",
-    title: "Taskflow",
-    category: "SaaS Workflow & Operations",
-    badge: "Internal Tool Architecture",
-    status: "Prototype",
-    url: null,
-    displayUrl: "System Architecture",
-    description:
-      "A lean task and project management application built for agencies and distributed teams, prioritizing distraction-free Kanban pipelines and zero-latency state synchronization.",
-    deliverables: [
-      "Real-time team board & sprint orchestration",
-      "Automated milestone tracking & reminders",
-      "Client view-only timeline links",
-      "Integrated timesheet & invoice generation",
-    ],
-    previewType: "kanban-board",
-    previewData: {
-      boardName: "Client Sprint: Web System Release v2.4",
-      columns: [
-        {
-          name: "Scoping & Brief",
-          count: 2,
-          task: "API Schema Specification",
-        },
-        {
-          name: "In Development",
-          count: 4,
-          task: "WhatsApp Notification Webhook",
-        },
-        {
-          name: "Quality Assurance",
-          count: 1,
-          task: "Core Web Vitals Audit (98/100)",
-        },
-      ],
-    },
-  },
+  // {
+  //   id: "krishilink",
+  //   title: "KrishiLink",
+  //   category: "AgriTech & B2B Marketplace",
+  //   badge: "Prototype Concept",
+  //   status: "Concept",
+  //   url: null,
+  //   displayUrl: "Prototype Architecture",
+  //   description:
+  //     "A direct farmer-to-buyer agricultural marketplace concept created to bypass predatory middlemen, providing transparent regional mandi prices and automated bulk order dispatch.",
+  //   deliverables: [
+  //     "Direct farmer quotation & bidding interface",
+  //     "Real-time regional Mandi price tracking",
+  //     "WhatsApp dispatch alerts & SMS fallback",
+  //     "Bilingual interface design (English / Marathi)",
+  //   ],
+  //   previewType: "marketplace-feed",
+  //   previewData: {
+  //     marketIndex: "Maharashtra APMC Regional Bids",
+  //     updatedAt: "Today · 06:30 AM IST",
+  //     lots: [
+  //       {
+  //         item: "Grade-A Tomatoes",
+  //         origin: "Nashik Mandi",
+  //         avgPrice: "₹34 / kg",
+  //         directOffer: "₹32 / kg",
+  //         status: "Open",
+  //       },
+  //       {
+  //         item: "Lasalgaon Red Onions",
+  //         origin: "Lasalgaon Mandi",
+  //         avgPrice: "₹26 / kg",
+  //         directOffer: "₹24 / kg",
+  //         status: "Verified",
+  //       },
+  //       {
+  //         item: "Ratnagiri Hapus (Alphonso)",
+  //         origin: "Ratnagiri Hub",
+  //         avgPrice: "₹1,200 / crate",
+  //         directOffer: "₹1,050 / crate",
+  //         status: "Pre-order",
+  //       },
+  //     ],
+  //   },
+  // },
+  // {
+  //   id: "taskflow",
+  //   title: "Taskflow",
+  //   category: "SaaS Workflow & Operations",
+  //   badge: "Internal Tool Architecture",
+  //   status: "Prototype",
+  //   url: null,
+  //   displayUrl: "System Architecture",
+  //   description:
+  //     "A lean task and project management application built for agencies and distributed teams, prioritizing distraction-free Kanban pipelines and zero-latency state synchronization.",
+  //   deliverables: [
+  //     "Real-time team board & sprint orchestration",
+  //     "Automated milestone tracking & reminders",
+  //     "Client view-only timeline links",
+  //     "Integrated timesheet & invoice generation",
+  //   ],
+  //   previewType: "kanban-board",
+  //   previewData: {
+  //     boardName: "Client Sprint: Web System Release v2.4",
+  //     columns: [
+  //       {
+  //         name: "Scoping & Brief",
+  //         count: 2,
+  //         task: "API Schema Specification",
+  //       },
+  //       {
+  //         name: "In Development",
+  //         count: 4,
+  //         task: "WhatsApp Notification Webhook",
+  //       },
+  //       {
+  //         name: "Quality Assurance",
+  //         count: 1,
+  //         task: "Core Web Vitals Audit (98/100)",
+  //       },
+  //     ],
+  //   },
+  // },
 ];
 
 export const SERVICES_DATA = [

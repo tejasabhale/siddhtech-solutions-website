@@ -11,10 +11,25 @@ const NAV_LINKS = [
     { label: "Work", href: "#work" },
     { label: "Process", href: "#process" },
     { label: "Approach", href: "#approach" },
-    { label: "Pricing", href: "#pricing" },
+    // { label: "Pricing", href: "#pricing" },
 ];
 
-const SECTION_IDS = ["home", "services", "work", "process", "approach", "pricing", "contact"];
+const SECTION_IDS = [
+    "home",
+    "services",
+    "work",
+    "process",
+    "approach",
+    // "pricing",
+    "contact",
+];
+
+/* Logo file lives in /public */
+const LOGO_SRC = "/siddhtech-logo.svg";
+
+/* Set to false if the logo file already contains the "SiddhTech Solutions" name */
+const SHOW_WORDMARK = true;
+
 const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
 const FOCUS =
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D94F35]";
@@ -24,8 +39,15 @@ export default function Navbar() {
     const [activeSection, setActiveSection] = useState("home");
     const [hovered, setHovered] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [wipeOrigin, setWipeOrigin] = useState("calc(100% - 40px) 40px");
-    const [indicator, setIndicator] = useState({ left: 0, width: 0, show: false, animate: false });
+    const [wipeOrigin, setWipeOrigin] = useState(
+        "calc(100% - 40px) 40px"
+    );
+    const [indicator, setIndicator] = useState({
+        left: 0,
+        width: 0,
+        show: false,
+        animate: false,
+    });
 
     const linkRefs = useRef({});
     const barRef = useRef(null);
@@ -33,7 +55,7 @@ export default function Navbar() {
     const menuRef = useRef(null);
     const wasOpen = useRef(false);
 
-    /* ---------- Scroll: condensed state + progress (progress bypasses React renders) ---------- */
+    /* ---------- Scroll: condensed state + progress ---------- */
     useEffect(() => {
         let ticking = false;
 
@@ -41,9 +63,19 @@ export default function Navbar() {
             const y = window.scrollY;
             setScrolled(y > 20);
 
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
-            if (barRef.current) barRef.current.style.transform = `scaleX(${p})`;
+            const max =
+                document.documentElement.scrollHeight -
+                window.innerHeight;
+
+            const p =
+                max > 0
+                    ? Math.min(1, Math.max(0, y / max))
+                    : 0;
+
+            if (barRef.current) {
+                barRef.current.style.transform = `scaleX(${p})`;
+            }
+
             ticking = false;
         };
 
@@ -54,9 +86,14 @@ export default function Navbar() {
             }
         };
 
-        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("scroll", onScroll, {
+            passive: true,
+        });
+
         window.addEventListener("resize", onScroll);
+
         update();
+
         return () => {
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
@@ -68,10 +105,15 @@ export default function Navbar() {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) setActiveSection(entry.target.id);
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
                 });
             },
-            { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
+            {
+                rootMargin: "-20% 0px -60% 0px",
+                threshold: 0,
+            }
         );
 
         SECTION_IDS.forEach((id) => {
@@ -85,19 +127,30 @@ export default function Navbar() {
     /* ---------- Sliding indicator ---------- */
     const targetKey =
         hovered ??
-        (NAV_LINKS.some((l) => l.href.slice(1) === activeSection) ? activeSection : null);
+        (NAV_LINKS.some(
+            (link) => link.href.slice(1) === activeSection
+        )
+            ? activeSection
+            : null);
 
     const measure = useCallback(() => {
-        const el = targetKey ? linkRefs.current[targetKey] : null;
+        const el = targetKey
+            ? linkRefs.current[targetKey]
+            : null;
+
         if (!el || el.offsetWidth === 0) {
-            setIndicator((p) => ({ ...p, show: false }));
+            setIndicator((prev) => ({
+                ...prev,
+                show: false,
+            }));
             return;
         }
-        setIndicator((p) => ({
+
+        setIndicator((prev) => ({
             left: el.offsetLeft,
             width: el.offsetWidth,
             show: true,
-            animate: p.show,
+            animate: prev.show,
         }));
     }, [targetKey]);
 
@@ -107,54 +160,87 @@ export default function Navbar() {
 
     useEffect(() => {
         window.addEventListener("resize", measure);
-        if (document.fonts?.ready) document.fonts.ready.then(measure);
-        return () => window.removeEventListener("resize", measure);
+
+        if (document.fonts?.ready) {
+            document.fonts.ready.then(measure);
+        }
+
+        return () => {
+            window.removeEventListener("resize", measure);
+        };
     }, [measure]);
 
-    /* ---------- Mobile menu: close on resize / Escape, focus trap, scroll lock ---------- */
+    /* ---------- Mobile menu: resize, Escape and focus trap ---------- */
     useEffect(() => {
         const onResize = () => {
-            if (window.innerWidth >= 1024) setMenuOpen(false);
+            if (window.innerWidth >= 1024) {
+                setMenuOpen(false);
+            }
         };
-        const onKey = (e) => {
-            if (e.key === "Escape") setMenuOpen(false);
 
-            if (e.key === "Tab" && menuOpen && menuRef.current) {
+        const onKey = (e) => {
+            if (e.key === "Escape") {
+                setMenuOpen(false);
+            }
+
+            if (
+                e.key === "Tab" &&
+                menuOpen &&
+                menuRef.current
+            ) {
                 const nodes = [
                     toggleRef.current,
                     ...menuRef.current.querySelectorAll("a[href]"),
                 ].filter(Boolean);
+
                 const first = nodes[0];
                 const last = nodes[nodes.length - 1];
 
-                if (e.shiftKey && document.activeElement === first) {
+                if (
+                    e.shiftKey &&
+                    document.activeElement === first
+                ) {
                     e.preventDefault();
                     last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
+                } else if (
+                    !e.shiftKey &&
+                    document.activeElement === last
+                ) {
                     e.preventDefault();
                     first.focus();
                 }
             }
         };
+
         window.addEventListener("resize", onResize);
         window.addEventListener("keydown", onKey);
+
         return () => {
             window.removeEventListener("resize", onResize);
             window.removeEventListener("keydown", onKey);
         };
     }, [menuOpen]);
 
+    /* ---------- Body scroll lock + focus management ---------- */
     useEffect(() => {
         document.body.style.overflow = menuOpen ? "hidden" : "";
-        if (menuOpen) window.lenis?.stop?.();
-        else window.lenis?.start?.();
 
-        // Focus management: into the menu on open, back to the toggle on close.
         if (menuOpen) {
-            requestAnimationFrame(() => menuRef.current?.querySelector("a[href]")?.focus());
+            window.lenis?.stop?.();
+        } else {
+            window.lenis?.start?.();
+        }
+
+        if (menuOpen) {
+            requestAnimationFrame(() => {
+                menuRef.current
+                    ?.querySelector("a[href]")
+                    ?.focus();
+            });
         } else if (wasOpen.current) {
             toggleRef.current?.focus();
         }
+
         wasOpen.current = menuOpen;
 
         return () => {
@@ -163,28 +249,48 @@ export default function Navbar() {
         };
     }, [menuOpen]);
 
+    /* ---------- Toggle mobile menu ---------- */
     const toggleMenu = () => {
-        // Start the circular wipe from the toggle button's real position.
-        const rect = toggleRef.current?.getBoundingClientRect();
+        const rect =
+            toggleRef.current?.getBoundingClientRect();
+
         if (rect) {
-            setWipeOrigin(`${rect.left + rect.width / 2}px ${rect.top + rect.height / 2}px`);
+            setWipeOrigin(
+                `${rect.left + rect.width / 2}px ${rect.top + rect.height / 2
+                }px`
+            );
         }
-        setMenuOpen((o) => !o);
+
+        setMenuOpen((open) => !open);
     };
 
-    /* ---------- Smooth scroll to section ---------- */
+    /* ---------- Smooth scroll ---------- */
     const scrollTo = (e, href) => {
         e.preventDefault();
         setMenuOpen(false);
-        const el = document.getElementById(href.replace("#", ""));
+
+        const el = document.getElementById(
+            href.replace("#", "")
+        );
+
         if (!el) return;
 
         if (window.lenis) {
-            window.lenis.scrollTo(el, { offset: -80 });
+            window.lenis.scrollTo(el, {
+                offset: -80,
+            });
         } else {
-            const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
-            window.scrollTo({ top, behavior: "smooth" });
+            const top =
+                el.getBoundingClientRect().top +
+                window.pageYOffset -
+                80;
+
+            window.scrollTo({
+                top,
+                behavior: "smooth",
+            });
         }
+
         history.pushState(null, "", href);
     };
 
@@ -192,12 +298,19 @@ export default function Navbar() {
         <>
             <style>{`
                 @media (prefers-reduced-motion: reduce) {
-                    .ns-nav, .ns-nav * { transition-duration: 0.01ms !important; transition-delay: 0ms !important; }
+                    .siddhtech-nav,
+                    .siddhtech-nav * {
+                        transition-duration: 0.01ms !important;
+                        transition-delay: 0ms !important;
+                    }
                 }
             `}</style>
 
+            {/* ================= HEADER ================= */}
             <header
-                className={`ns-nav fixed inset-x-0 top-0 z-50 flex justify-center border-b transition-[padding,background-color,border-color,backdrop-filter] duration-500 ${EASE} ${scrolled ? "px-3 sm:px-6" : "px-0"
+                className={`siddhtech-nav fixed inset-x-0 top-0 z-50 flex justify-center border-b transition-[padding,background-color,border-color,backdrop-filter] duration-500 ${EASE} ${scrolled
+                    ? "px-3 sm:px-6"
+                    : "px-0"
                     } ${scrolled || menuOpen
                         ? "border-transparent bg-transparent"
                         : "border-[#B9B0A2]/30 bg-[#F5F1E8]/75 backdrop-blur-md"
@@ -209,7 +322,9 @@ export default function Navbar() {
                 }}
             >
                 <div
-                    className={`relative w-full overflow-hidden border transition-all duration-500 ${EASE} ${scrolled ? "max-w-5xl rounded-full" : "max-w-7xl rounded-none"
+                    className={`relative w-full overflow-hidden border transition-all duration-500 ${EASE} ${scrolled
+                        ? "max-w-5xl rounded-full"
+                        : "max-w-7xl rounded-none"
                         } ${menuOpen
                             ? "border-transparent bg-transparent shadow-none"
                             : scrolled
@@ -219,43 +334,52 @@ export default function Navbar() {
                 >
                     <div
                         className={`flex items-center justify-between gap-3 transition-all duration-500 ${EASE} ${scrolled
-                                ? "h-14 pl-4 pr-2 sm:pl-5 sm:pr-2.5"
-                                : "h-16 px-4 sm:h-20 sm:px-6 lg:px-12"
+                            ? "h-14 pl-4 pr-2 sm:pl-5 sm:pr-2.5"
+                            : "h-16 px-4 sm:h-20 sm:px-6 lg:px-12"
                             }`}
                     >
-                        {/* Brand */}
+                        {/* ================= BRAND ================= */}
                         <a
                             href="#home"
                             onClick={(e) => scrollTo(e, "#home")}
-                            aria-label="North Stone, back to top"
-                            className={`group flex min-w-0 items-center gap-2.5 rounded-full no-underline transition-colors duration-500 sm:gap-3 ${FOCUS} focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8] ${menuOpen ? "text-[#F5F1E8]" : "text-[#191919]"
+                            aria-label="SiddhTech Solutions, back to top"
+                            className={`group flex min-w-0 items-center gap-2 rounded-full no-underline transition-colors duration-500 sm:gap-3 ${FOCUS} focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8] ${menuOpen
+                                ? "text-[#F5F1E8]"
+                                : "text-[#191919]"
                                 }`}
                         >
-                            <svg
-                                viewBox="0 0 28 28"
-                                className="h-8 w-8 shrink-0 transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-90"
-                                aria-hidden="true"
+                            {/* Logo from /public.
+                                Sits on a light chip while the dark mobile menu is open,
+                                so a dark logo never disappears into the background. */}
+                            <span
+                                className={`flex shrink-0 items-center justify-center rounded-lg p-0.5 transition-colors duration-500 ${menuOpen
+                                    ? "bg-[#F5F1E8]"
+                                    : "bg-transparent"
+                                    }`}
                             >
-                                <rect
-                                    width="28"
-                                    height="28"
-                                    rx="8"
-                                    fill={menuOpen ? "#F5F1E8" : "#191919"}
-                                    className="transition-colors duration-500"
+                                <img
+                                    src={LOGO_SRC}
+                                    alt=""
+                                    aria-hidden="true"
+                                    width="40"
+                                    height="40"
+                                    decoding="async"
+                                    draggable="false"
+                                    className={`w-auto select-none object-contain transition-all duration-500 ${EASE} group-hover:scale-105 ${scrolled
+                                        ? "h-8 sm:h-9"
+                                        : "h-9 sm:h-10 lg:h-11"
+                                        }`}
                                 />
-                                <path
-                                    d="M14 4.5 L16.2 11.8 L23.5 14 L16.2 16.2 L14 23.5 L11.8 16.2 L4.5 14 L11.8 11.8 Z"
-                                    fill="#D94F35"
-                                />
-                            </svg>
-                            <span className="flex items-baseline gap-2.5">
-                                <span className="whitespace-nowrap font-['Plus_Jakarta_Sans',sans-serif] text-lg font-extrabold tracking-tight sm:text-xl">
-                                    North Stone
-                                </span>
                             </span>
+
+                            {SHOW_WORDMARK && (
+                                <span className="truncate whitespace-nowrap font-['Plus_Jakarta_Sans',sans-serif] text-base font-extrabold tracking-tight min-[400px]:text-lg sm:text-xl">
+                                    SiddhTech Solutions
+                                </span>
+                            )}
                         </a>
 
-                        {/* Desktop links (lg+) */}
+                        {/* ================= DESKTOP NAVIGATION ================= */}
                         <nav
                             aria-label="Primary navigation"
                             onMouseLeave={() => setHovered(null)}
@@ -273,22 +397,41 @@ export default function Navbar() {
                                         : "opacity 300ms",
                                 }}
                             />
+
                             {NAV_LINKS.map((link) => {
-                                const key = link.href.slice(1);
-                                const isActive = activeSection === key;
+                                const key =
+                                    link.href.slice(1);
+
+                                const isActive =
+                                    activeSection === key;
+
                                 return (
                                     <a
                                         key={link.href}
-                                        ref={(el) => (linkRefs.current[key] = el)}
+                                        ref={(el) =>
+                                            (linkRefs.current[key] = el)
+                                        }
                                         href={link.href}
-                                        onClick={(e) => scrollTo(e, link.href)}
-                                        onMouseEnter={() => setHovered(key)}
-                                        onFocus={() => setHovered(key)}
-                                        onBlur={() => setHovered(null)}
-                                        aria-current={isActive ? "true" : undefined}
+                                        onClick={(e) =>
+                                            scrollTo(e, link.href)
+                                        }
+                                        onMouseEnter={() =>
+                                            setHovered(key)
+                                        }
+                                        onFocus={() =>
+                                            setHovered(key)
+                                        }
+                                        onBlur={() =>
+                                            setHovered(null)
+                                        }
+                                        aria-current={
+                                            isActive
+                                                ? "true"
+                                                : undefined
+                                        }
                                         className={`relative flex h-9 items-center rounded-full px-4 text-sm font-medium tracking-tight transition-colors duration-300 ${FOCUS} ${isActive
-                                                ? "text-[#D94F35]"
-                                                : "text-[#191919]/75 hover:text-[#191919]"
+                                            ? "text-[#D94F35]"
+                                            : "text-[#191919]/75 hover:text-[#191919]"
                                             }`}
                                     >
                                         {link.label}
@@ -297,21 +440,27 @@ export default function Navbar() {
                             })}
                         </nav>
 
-                        {/* CTA + mobile toggle */}
+                        {/* ================= CTA + MOBILE TOGGLE ================= */}
                         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                             <a
                                 href="#contact"
-                                onClick={(e) => scrollTo(e, "#contact")}
+                                onClick={(e) =>
+                                    scrollTo(e, "#contact")
+                                }
                                 className="group relative hidden h-10 items-center overflow-hidden whitespace-nowrap rounded-full bg-[#D94F35] px-5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#191919] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8] sm:inline-flex"
                             >
                                 <span
                                     aria-hidden="true"
                                     className={`absolute inset-0 translate-y-full rounded-full bg-[#191919] transition-transform duration-500 ${EASE} group-hover:translate-y-0 group-focus-visible:translate-y-0`}
                                 />
+
                                 <span className="relative block h-5 overflow-hidden leading-5">
-                                    <span className={`block transition-transform duration-500 ${EASE} group-hover:-translate-y-full group-focus-visible:-translate-y-full`}>
+                                    <span
+                                        className={`block transition-transform duration-500 ${EASE} group-hover:-translate-y-full group-focus-visible:-translate-y-full`}
+                                    >
                                         Start a project
                                     </span>
+
                                     <span
                                         aria-hidden="true"
                                         className={`absolute left-0 top-full block whitespace-nowrap transition-transform duration-500 ${EASE} group-hover:-translate-y-full group-focus-visible:-translate-y-full`}
@@ -327,10 +476,14 @@ export default function Navbar() {
                                 onClick={toggleMenu}
                                 aria-expanded={menuOpen}
                                 aria-controls="mobile-menu"
-                                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                                aria-label={
+                                    menuOpen
+                                        ? "Close menu"
+                                        : "Open menu"
+                                }
                                 className={`relative h-11 w-11 shrink-0 rounded-full border transition-colors duration-500 lg:hidden ${FOCUS} ${menuOpen
-                                        ? "border-[#F5F1E8]/30 text-[#F5F1E8]"
-                                        : "border-[#B9B0A2]/50 text-[#191919]"
+                                    ? "border-[#F5F1E8]/30 text-[#F5F1E8]"
+                                    : "border-[#B9B0A2]/50 text-[#191919]"
                                     }`}
                             >
                                 <span
@@ -341,6 +494,7 @@ export default function Navbar() {
                                             : "translate(-50%, -4px) rotate(0deg)",
                                     }}
                                 />
+
                                 <span
                                     className={`absolute left-1/2 top-1/2 block h-[1.5px] w-5 bg-current transition-transform duration-500 ${EASE}`}
                                     style={{
@@ -353,23 +507,29 @@ export default function Navbar() {
                         </div>
                     </div>
 
-                    {/* Scroll progress (updated via ref, no re-renders) */}
+                    {/* Scroll progress */}
                     <span
                         ref={barRef}
                         aria-hidden="true"
-                        className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[#D94F35] transition-opacity duration-300 ${menuOpen ? "opacity-0" : "opacity-100"
+                        className={`absolute bottom-0 left-0 h-[2px] w-full origin-left bg-[#D94F35] transition-opacity duration-300 ${menuOpen
+                            ? "opacity-0"
+                            : "opacity-100"
                             }`}
-                        style={{ transform: "scaleX(0)" }}
+                        style={{
+                            transform: "scaleX(0)",
+                        }}
                     />
                 </div>
             </header>
 
-            {/* Mobile / tablet full-screen menu with circular wipe from the toggle */}
+            {/* ================= MOBILE MENU ================= */}
             <div
                 ref={menuRef}
                 id="mobile-menu"
                 aria-hidden={!menuOpen}
-                className={`ns-nav fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[#191919] text-[#F5F1E8] transition-[clip-path,visibility] duration-700 ${EASE} lg:hidden ${menuOpen ? "visible" : "invisible"
+                className={`siddhtech-nav fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-[#191919] text-[#F5F1E8] transition-[clip-path,visibility] duration-700 ${EASE} lg:hidden ${menuOpen
+                    ? "visible"
+                    : "invisible"
                     }`}
                 style={{
                     clipPath: menuOpen
@@ -382,23 +542,48 @@ export default function Navbar() {
                     className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-stretch justify-center gap-1 px-6 pb-4 pt-24 text-center sm:px-10"
                 >
                     {NAV_LINKS.map((link, i) => {
-                        const isActive = activeSection === link.href.slice(1);
+                        const isActive =
+                            activeSection ===
+                            link.href.slice(1);
+
                         return (
                             <a
                                 key={link.href}
                                 href={link.href}
                                 tabIndex={menuOpen ? 0 : -1}
-                                onClick={(e) => scrollTo(e, link.href)}
-                                aria-current={isActive ? "true" : undefined}
-                                className={`group flex items-center justify-center gap-3 border-b border-[#F5F1E8]/10 py-3.5 font-['Plus_Jakarta_Sans',sans-serif] text-3xl font-bold tracking-tight transition-all duration-700 sm:py-4 sm:text-4xl ${EASE} focus-visible:text-[#D94F35] focus-visible:outline-none ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-                                    } ${isActive ? "text-[#D94F35]" : "text-[#F5F1E8] hover:text-[#D94F35]"}`}
-                                style={{ transitionDelay: menuOpen ? `${280 + i * 70}ms` : "0ms" }}
+                                onClick={(e) =>
+                                    scrollTo(e, link.href)
+                                }
+                                aria-current={
+                                    isActive
+                                        ? "true"
+                                        : undefined
+                                }
+                                className={`group flex items-center justify-center gap-3 border-b border-[#F5F1E8]/10 py-3.5 font-['Plus_Jakarta_Sans',sans-serif] text-3xl font-bold tracking-tight transition-all duration-700 sm:py-4 sm:text-4xl ${EASE} focus-visible:text-[#D94F35] focus-visible:outline-none ${menuOpen
+                                    ? "translate-y-0 opacity-100"
+                                    : "translate-y-10 opacity-0"
+                                    } ${isActive
+                                        ? "text-[#D94F35]"
+                                        : "text-[#F5F1E8] hover:text-[#D94F35]"
+                                    }`}
+                                style={{
+                                    transitionDelay: menuOpen
+                                        ? `${280 + i * 70}ms`
+                                        : "0ms",
+                                }}
                             >
-                                <span aria-hidden="true" className="h-2 w-2 shrink-0" />
-                                <span>{link.label}</span>
                                 <span
                                     aria-hidden="true"
-                                    className={`h-2 w-2 shrink-0 rounded-full bg-[#D94F35] transition-transform duration-300 ${isActive ? "scale-100" : "scale-0 group-hover:scale-100 group-focus-visible:scale-100"
+                                    className="h-2 w-2 shrink-0"
+                                />
+
+                                <span>{link.label}</span>
+
+                                <span
+                                    aria-hidden="true"
+                                    className={`h-2 w-2 shrink-0 rounded-full bg-[#D94F35] transition-transform duration-300 ${isActive
+                                        ? "scale-100"
+                                        : "scale-0 group-hover:scale-100 group-focus-visible:scale-100"
                                         }`}
                                 />
                             </a>
@@ -406,30 +591,42 @@ export default function Navbar() {
                     })}
                 </nav>
 
+                {/* Mobile menu footer */}
                 <div
-                    className={`mx-auto w-full max-w-2xl px-6 pt-4 transition-all duration-700 sm:px-10 ${EASE} ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+                    className={`mx-auto w-full max-w-2xl px-6 pt-4 transition-all duration-700 sm:px-10 ${EASE} ${menuOpen
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-6 opacity-0"
                         }`}
                     style={{
-                        transitionDelay: menuOpen ? `${280 + NAV_LINKS.length * 70}ms` : "0ms",
-                        paddingBottom: "max(2rem, env(safe-area-inset-bottom, 0px))",
+                        transitionDelay: menuOpen
+                            ? `${280 + NAV_LINKS.length * 70}ms`
+                            : "0ms",
+                        paddingBottom:
+                            "max(2rem, env(safe-area-inset-bottom, 0px))",
                     }}
                 >
                     <a
                         href="#contact"
                         tabIndex={menuOpen ? 0 : -1}
-                        onClick={(e) => scrollTo(e, "#contact")}
+                        onClick={(e) =>
+                            scrollTo(e, "#contact")
+                        }
                         className="flex min-h-14 w-full items-center justify-center rounded-full bg-[#D94F35] text-base font-semibold text-white transition-colors duration-200 hover:bg-[#BF412A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
                     >
                         Start a project
                     </a>
+
                     <p className="mt-5 text-center text-sm text-[#F5F1E8]/60">
                         Pune, Maharashtra ·{" "}
                         <a
-                            href="mailto:hello@northstone.in"
+                            href="#contact"
                             tabIndex={menuOpen ? 0 : -1}
+                            onClick={(e) =>
+                                scrollTo(e, "#contact")
+                            }
                             className="underline-offset-4 hover:text-[#D94F35] hover:underline focus-visible:text-[#D94F35] focus-visible:outline-none"
                         >
-                            hello@northstone.in
+                            Get in touch
                         </a>
                     </p>
                 </div>

@@ -34,7 +34,7 @@ export default function Home() {
       <Work />
       <Process />
       <Approach />
-      <Pricing onChoose={chooseTier} />
+      {/* <Pricing onChoose={chooseTier} /> */}
 
       <Contact
         formData={formData}
