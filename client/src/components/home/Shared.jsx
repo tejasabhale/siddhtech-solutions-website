@@ -13,7 +13,7 @@ export const FOCUS =
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D94F35]";
 
 export const goTo = (e, href) => {
-    e.preventDefault();
+    e.preventDefault(); 
 
     const el = document.getElementById(href.replace("#", ""));
     if (!el) return;
